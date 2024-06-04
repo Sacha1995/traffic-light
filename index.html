@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      .outer {
+        width: 20%;
+        margin: 5vh auto 0;
+        border: 1px solid #000;
+        padding: 2.5vw;
+        z-index: 200;
+        border-radius: 5px;
+      }
+
+      .inner {
+        background-color: #000;
+        padding: 2.5vw;
+        border-radius: 5px;
+      }
+
+      .light {
+        background-color: #ccc;
+        width: 10vw;
+        height: 10vw;
+        margin-bottom: 10px;
+        border-radius: 50%;
+      }
+
+      .light:last-child {
+        margin-bottom: 0;
+      }
+
+      .stop.on {
+        background-color: #f00;
+      }
+
+      .caution.on {
+        background-color: #ff0;
+      }
+
+      .go.on {
+        background-color: #0f0;
+      }
+
+      footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #eee;
+        padding: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      footer button {
+        background-color: #eee;
+        padding: 15px;
+        border-radius: 5px;
+        margin-inline-end: 5px;
+      }
+
+      #stop,
+      .stopTimer {
+        background-color: red;
+        color: white;
+      }
+
+      #caution {
+        background-color: yellow;
+      }
+
+      #go,
+      .startTimer {
+        background-color: green;
+        color: white;
+      }
+
+      .containerBtn {
+        display: flex;
+        justify-content: space-between;
+        max-width: 500px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="outer">
+      <div class="inner">
+        <div class="light stop"></div>
+        <div class="light caution"></div>
+        <div class="light go"></div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="containerBtn">
+        <div class="containerColouredButtons">
+          <button class="btn" id="stop">Stop</button>
+          <button class="btn" id="caution">Caution</button>
+          <button class="btn" id="go">Go</button>
+        </div>
+        <div class="containerLoop">
+          <button class="btn startTimer" id="startTimer">Start timer</button>
+          <button class="btn stopTimer" id="stopTimer">Stop timer</button>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+<script>
+  // 1. Wire up the buttons to the lights
+  // You'll have to select and store the lights as a variable (although it may help you later to have a reference to all of them at once via the 'light' class)
+  // You'll have to select and store the buttons as separate variables
+  // then, add an event listener to each of the buttons
+  // in the 'handler' (the function you give to the listener) you add a class of 'on' to the relevant light
+  // Also make the lights go on and off on hover (of the light!!)
+  // 2. (Extra credit): Have a go at making it so that only one light can be on at one time
+  // 3. (wild&crazy credit) See if you can set up a timer of some sort to do that automatically (You'll have to add new start and stop buttons to the page)
+
+  const stopButton = document.getElementById("stop");
+  const stopLight = document.querySelector(".light.stop");
+  const cautionButton = document.getElementById("caution");
+  const cautionLight = document.querySelector(".light.caution");
+  const goButton = document.getElementById("go");
+  const goLight = document.querySelector(".light.go");
+  const lights = document.getElementsByClassName("light");
+  const startTimer = document.getElementById("startTimer");
+  const stopTimer = document.getElementById("stopTimer");
+
+  //Turn lights on
+  stopButton.addEventListener("click", (e) => {
+    turnOff();
+    clearAnimation();
+    stopLight.classList.add("on");
+  });
+
+  cautionButton.addEventListener("click", (e) => {
+    turnOff();
+    clearAnimation();
+    cautionLight.classList.add("on");
+  });
+
+  goButton.addEventListener("click", (e) => {
+    turnOff();
+    clearAnimation();
+    goLight.classList.add("on");
+  });
+
+  //turn lights off
+  function turnOff() {
+    for (let i = 0; i < lights.length; i++) {
+      lights[i].classList.remove("on");
+    }
+  }
+
+  // turn on light on hover
+  for (let i = 0; i < lights.length; i++) {
+    lights[i].addEventListener("mouseover", (e) => {
+      clearAnimation();
+      turnOff();
+      lights[i].classList.add("on");
+    });
+    lights[i].addEventListener("mouseout", (e) => {
+      lights[i].classList.remove("on");
+    });
+  }
+
+  // timer
+  let x = 2;
+
+  function animation() {
+    turnOff();
+    if (x % 2 === 0) {
+      cautionLight.classList.add("on");
+    } else if (x % 4 === 1 || x === 1) {
+      stopLight.classList.add("on");
+    } else {
+      goLight.classList.add("on");
+    }
+    x++;
+  }
+
+  const animationInterval = startTimer.addEventListener("click", (e) => {
+    stopLight.classList.add("on");
+    endTimer = setInterval(animation, 1000);
+  });
+
+  function clearAnimation() {
+    clearInterval(endTimer);
+    return (x = 2);
+  }
+
+  stopTimer.addEventListener("click", (e) => {
+    clearAnimation();
+    turnOff();
+    console.log("hello");
+  });
+
+  // const lightsTimer = [
+  //   stopLight,
+  //   cautionLight,
+  //   goLight,
+  //   cautionLight,
+  //   stopLight,
+  // ];
+
+  // if (x < lightsTimer.length) {
+  //   setInterval(function () {
+  //     turnOff();
+  //     lightsTimer[x].classList.add("on");
+  //     x++;
+  //   }, 1000);
+  // } else {
+  //   return (x = 0);
+  // }
+
+  // let x = 0;
+
+  // const Animation = setInterval(function () {
+  //   if (x === 10) {
+  //     clearInterval(Animation);
+  //   }
+  //   for (let i = 0; i < lightsTimer.length; i++) {
+  //     setInterval(function () {
+  //       turnOff();
+  //       lightsTimer[i].classList.add("on");
+  //       console.log("test");
+  //     }, 1000);
+  //   }
+  //   x++;
+  // }, 1000);
+
+  // function Animation() {}
+
+  // for (let i = 0; i < lightsTimer.length; i++) {
+  //   // turnOff();
+  //   // lightsTimer[i].classList.add("on");
+  //   console.log("round ${i}");
+  // }
+
+  // startTimer.addEventListener("click", (e) => {
+  //   Animation();
+  // });
+
+  // startTimer.addEventListener("click", (e) => {
+  //   setInterval(() => {
+  //     for (let i = 0; i < lights.length; i++) {
+  //       turnOff();
+  //       lights[i].classList.add("on");
+  //     }
+  //   }, 1000);
+  // });
+
+  // Why does it not repeat?
+  // startTimer.addEventListener("click", (e) => {
+  //   turnOff();
+  //   stopLight.classList.add("on");
+  //   for (let i = 0; i < 20; i++) {
+  //     setTimeout(() => {
+  //       turnOff();
+  //       cautionLight.classList.add("on");
+  //     }, 1000);
+  //     setTimeout(() => {
+  //       turnOff();
+  //       goLight.classList.add("on");
+  //     }, 2000);
+  //     setTimeout(() => {
+  //       turnOff();
+  //       cautionLight.classList.add("on");
+  //     }, 3000);
+  //     setTimeout(() => {
+  //       turnOff();
+  //       stopLight.classList.add("on");
+  //     }, 4000);
+  //   }
+  // });
+</script>
