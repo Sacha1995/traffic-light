@@ -76,17 +76,54 @@
         background-color: yellow;
       }
 
-      #go,
-      .startTimer {
+      #go {
         background-color: green;
         color: white;
       }
 
+      .ST {
+        background-size: cover;
+        font-weight: bold;
+        text-shadow: 0px 0px 1px white;
+        background-position: center;
+      }
+
+      .startTimer {
+        background-image: url(./img/Flag_of_the_United_Kingdom.svg.webp);
+      }
+
+      .startTimerNL {
+        background-image: url(./img/Flag_of_the_Netherlands.svg.webp);
+      }
+
+      .startTimerGER {
+        background-image: url(./img/Flag_of_Germany.svg.png);
+      }
+
       .containerBtn {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-around;
         max-width: 500px;
         width: 100%;
+      }
+
+      .containerColouredButtons,
+      .containerLoop {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      @media (min-width: 660px) {
+        .containerBtn {
+          justify-content: space-between;
+          max-width: 700px;
+        }
+
+        .containerColouredButtons,
+        .containerLoop {
+          flex-direction: row;
+        }
       }
     </style>
   </head>
@@ -107,7 +144,13 @@
           <button class="btn" id="go">Go</button>
         </div>
         <div class="containerLoop">
-          <button class="btn startTimer" id="startTimer">Start timer</button>
+          <button class="btn ST startTimer" id="startTimer">Start UK</button>
+          <button class="btn ST startTimerNL" id="startTimerNL">
+            Start NL
+          </button>
+          <button class="btn ST startTimerGER" id="startTimerGER">
+            Start GER
+          </button>
           <button class="btn stopTimer" id="stopTimer">Stop timer</button>
         </div>
       </div>
@@ -133,6 +176,8 @@
   const lights = document.getElementsByClassName("light");
   const startTimer = document.getElementById("startTimer");
   const stopTimer = document.getElementById("stopTimer");
+  const startTimerNL = document.getElementById("startTimerNL");
+  const startTimerGER = document.getElementById("startTimerGER");
 
   //Turn lights on
   stopButton.addEventListener("click", (e) => {
@@ -172,7 +217,7 @@
     });
   }
 
-  // timer
+  // timer UK
   let x = 2;
 
   function animation() {
@@ -187,7 +232,13 @@
     x++;
   }
 
+  var endTimer = () => {
+    setInterval(animation, 1000);
+  };
+
   const animationInterval = startTimer.addEventListener("click", (e) => {
+    clearAnimation();
+    turnOff();
     stopLight.classList.add("on");
     endTimer = setInterval(animation, 1000);
   });
@@ -200,9 +251,52 @@
   stopTimer.addEventListener("click", (e) => {
     clearAnimation();
     turnOff();
-    console.log("hello");
   });
 
+  //timer NL
+  function animationNL() {
+    turnOff();
+    if (x % 3 === 0) {
+      cautionLight.classList.add("on");
+    } else if (x % 3 === 1 || x === 1) {
+      stopLight.classList.add("on");
+    } else {
+      goLight.classList.add("on");
+    }
+    x++;
+  }
+
+  const animationIntervalNL = startTimerNL.addEventListener("click", (e) => {
+    clearAnimation();
+    turnOff();
+    stopLight.classList.add("on");
+    endTimer = setInterval(animationNL, 1000);
+  });
+
+  //timer GER
+  function animationGER() {
+    turnOff();
+    if (x % 4 === 2 || x === 2) {
+      cautionLight.classList.add("on");
+      stopLight.classList.add("on");
+    } else if (x % 4 === 0) {
+      cautionLight.classList.add("on");
+    } else if (x % 4 === 1 || x === 1) {
+      stopLight.classList.add("on");
+    } else {
+      goLight.classList.add("on");
+    }
+    x++;
+  }
+
+  const animationIntervalGER = startTimerGER.addEventListener("click", (e) => {
+    clearAnimation();
+    turnOff();
+    stopLight.classList.add("on");
+    endTimer = setInterval(animationGER, 1000);
+  });
+
+  //me trying to figure out the timer for a very long time
   // const lightsTimer = [
   //   stopLight,
   //   cautionLight,
